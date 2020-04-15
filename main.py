@@ -4,15 +4,14 @@ import ClimbArea as ca
 
 def main():
     # Creating climbing areas and adding them to area list
-    areaList = [ca.BoulderArea("Cave", 15), ca.BigWallArea("Yosemite", 21), ca.BoulderArea("Comp", 9), ca.BigWallArea("Flat Iron", 12)]
-
-    #Our route setter
+    areaList = [ca.BoulderArea("Cave", 15), ca.BigWallArea("Yosemite", 21), ca.BoulderArea("Comp", 9),
+                ca.BigWallArea("Flat Iron", 12)]
+    # Our route setter
     ondra = ca.RouteSetter(areaList)
     ondra.initAllRoutes()
     for i in range(9):
         ondra.setNextRoute()
-
-    #Areas will be part of the setter class after they are initialized
+    # Areas will be part of the setter class after they are initialized
     for a in ondra.areaList:
         print(a.name, a.routes)
 
