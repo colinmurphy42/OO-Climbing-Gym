@@ -1,16 +1,32 @@
 import checkingIn
 import DB
+import ClimbArea as ca
 
 def main():
-    test = checkingIn.checkingIn('7202195293')
-    test = checkingIn.Shoes(test, '7202195293')
-    test = checkingIn.Rope(test, '7202195293')
-    test = checkingIn.Harness(test, '7202195293')
+    # OSCAR WORK
+    # test = checkingIn.checkingIn('7202195293')
+    # test = checkingIn.Shoes(test, '7202195293')
+    # test = checkingIn.Rope(test, '7202195293')
+    # test = checkingIn.Harness(test, '7202195293')
+    #
+    # print(test.member)
+    # print(test.getDescription() + " for a total: " + str(test.total()))
+    # test.checkout()
 
-    #print(test.member)
-    #print(test.getDescription() + " for a total: " + str(test.total()))
-    test.checkout()
-
+    # Creating climbing areas and adding them to area list
+    areaList = [ca.BoulderArea("Cave", 15), ca.BigWallArea("Yosemite", 21), ca.BoulderArea("Comp", 9),
+                ca.BigWallArea("Flat Iron", 12)]
+    # Our route setter
+    ondra = ca.RouteSetter(areaList)
+    ondra.initAllRoutes()
+    for i in range(9):
+        ondra.setNextRoute()
+    # Areas will be part of the setter class after they are initialized
+    for a in ondra.areaList:
+        print(a.name, a.routes)
+    ondra.addNewArea(ca.BoulderArea("Slab", 16))
+    for a in ondra.areaList:
+        print(a.name, a.routes)
 
 if __name__ == "__main__":
     main()
