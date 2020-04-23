@@ -1,11 +1,7 @@
-import DB
-
-
 class checkingIn:
     member = {}
-    def __init__(self,phone):
-        self.mem = DB.DB()
-        self.member = self.mem.getMember(phone)
+    def __init__(self, mem):
+        self.member = mem
 
     def getDescription(self):
         return self.member['name']
@@ -25,12 +21,15 @@ class checkingIn:
             return self.gearcost() + self.daypass()
 
     def checkout(self):
-        self.mem.addRec(self.member['phone'] , self.getDescription(), self.total())
-        print ("added rec")
+        return ({'phone': self.member['phone'], 'desciption' : self.getDescription(), 'total' : self.total()})
+
+# ===============================================================================================================
 
 class GearDec(checkingIn):
     def __init__(self , phone):
         super().__init__(phone)
+
+# ===============================================================================================================
 
 class Shoes(GearDec):
     def __init__(self, checkingIn, phone):
@@ -46,6 +45,8 @@ class Shoes(GearDec):
     def daypass(self):
         return self.tmp.daypass()
 
+# ===============================================================================================================
+
 class Harness(GearDec):
     def __init__(self, checkingIn, phone):
         super().__init__(phone)
@@ -59,6 +60,8 @@ class Harness(GearDec):
 
     def daypass(self):
         return self.tmp.daypass()
+
+# ===============================================================================================================
 
 class Rope(GearDec):
     def __init__(self, checkingIn, phone):
