@@ -1,9 +1,11 @@
 # Sources:
 # https://pythonprogramming.net/change-show-new-frame-tkinter/
 # https://stackoverflow.com/questions/37068708/how-to-change-font-size-in-ttk-button
+# https://pythonprogramming.net/tkinter-popup-message-window/
 
 from tkinter import *
 from tkinter import ttk
+import OOGym
 
 myFont = ("Helvetica", 12)
 
@@ -48,6 +50,7 @@ class gymGUI(Tk):
 
 def fc(say="Basic bitch"):
     print(say)
+
 
 
 class MainPage(Frame):
@@ -144,22 +147,22 @@ class NewMemPage(Frame):
         vM = StringVar()
         memLabel = Label(self, text="Choose membership:", font=myFont)
         memLabel.grid(row=4, column=1, columnspan=2, sticky='W', pady=(15, 10))
-        casMem = Radiobutton(self, text="Casual", variable=vM, value=1)
+        casMem = Radiobutton(self, text="Casual", value= "Casual", variable=vM)
         casMem.grid(row=5, column=0, sticky="E")
-        regMem = Radiobutton(self, text="Regular", variable=vM, value=2)
+        regMem = Radiobutton(self, text="Regular", value="Regular", variable=vM)
         regMem.grid(row=5, column=1)
-        preMem = Radiobutton(self, text="Premium", variable=vM, value=3)
+        preMem = Radiobutton(self, text="Premium", value="Premium", variable=vM)
         preMem.grid(row=5, column=2, sticky="W")
 
         # Checkbox Group 2
         vC = StringVar()
         memLabel = Label(self, text="Choose climber type:", font=myFont)
         memLabel.grid(row=6, column=1, columnspan=2, sticky='W', pady=(15, 10))
-        casMem = Radiobutton(self, text="Boulder", variable=vC, value=1)
+        casMem = Radiobutton(self, text="Boulder",  value= "Boulder", variable=vC)
         casMem.grid(row=7, column=0, sticky="E")
-        regMem = Radiobutton(self, text="Top Rope", variable=vC, value=2)
+        regMem = Radiobutton(self, text="Top Rope", value= "Top Rope", variable=vC)
         regMem.grid(row=7, column=1)
-        preMem = Radiobutton(self, text="Lead", variable=vC, value=3)
+        preMem = Radiobutton(self, text="Lead",value= "Lead", variable=vC)
         preMem.grid(row=7, column=2, sticky="W")
 
         # Sign yo waiver!
@@ -167,5 +170,25 @@ class NewMemPage(Frame):
         waiver = Checkbutton(self, text="Sign Waiver", variable=cW, command=lambda: fc("Im a little gay checkbox"))
         waiver.grid(row=8, column=0, columnspan=2, pady=(10, 5), padx=(40, 0), sticky='W')
 
-        contButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        contButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: getCheckInValues(controller, nameEntry.get(), phoneEntry.get(), vM.get(), vC.get(), cW.get()))
         contButt.grid(row=9, column=1)
+
+
+def getCheckInValues(controller, name, phone, memType, climbType, checkState):
+    #name = nameEntry.get()
+    if checkState == 0:
+        popupWaiver()
+    else:
+        print(name, phone, memType, climbType, checkState)
+        controller.showPage(RoutePage)
+
+
+def popupWaiver():
+    popup = Tk()
+    popup.wm_title("!!!")
+    popup.geometry("250x100+350+200")
+    label = ttk.Label(popup, text="You must sign the waiver fool", font=myFont)
+    label.pack(side="top", pady=10)
+    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+    B1.pack(pady = 10)
+    popup.mainloop()

@@ -5,8 +5,8 @@ class OOGym:
         self.db = DB.DB()
         self.dailyCust = []
 
-    def checkIn(phone): # Might add all chekcing in processes here to connect UI
-    pass
+    #def checkIn(phone): # Might add all chekcing in processes here to connect UI
+    #pass
     #     memObj = self.db.getMember(phone)
     #     checkObj = checkingIn.checkingIn(mem)
     # if (shoes == True):
