@@ -32,8 +32,8 @@ class gymGUI(Tk):
         # This dict will hold all our window pages
         self.pages = {}
 
-        # Must add new page here for it to be connected to other
-        for P in (MainPage, CheckInPage, RoutePage, NewMemPage):
+        # ******Must add new page here for it to be connected to others*********
+        for P in (MainPage, CheckInPage, RoutePage, NewMemPage, GearPage):
             page = P(mainContain, self)
             self.pages[P] = page
             # The page will "stick" to entire size of the container
@@ -50,7 +50,6 @@ class gymGUI(Tk):
 
 def fc(say="Basic bitch"):
     print(say)
-
 
 
 class MainPage(Frame):
@@ -118,10 +117,43 @@ class RoutePage(Frame):
         homeButt.grid(row=0, column=0, sticky="nw")
 
 
+class GearPage(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+
+        # Home button
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt.grid(row=0, column=0, sticky="nw")
+
+        label = Label(self, text="Gear Shop", font=14)
+        label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 30))
+
+        # Checkbox Group 1
+        gS = IntVar()
+        shoes = Checkbutton(self, text="Shoes", variable=gS)
+        shoes.grid(row=5, column=0, sticky="E")
+
+        gH = IntVar()
+        harness = Checkbutton(self, text="Harness", variable=gH)
+        harness.grid(row=5, column=1)
+
+        gR = IntVar()
+        rope = Checkbutton(self, text="Rope", variable=gR)
+        rope.grid(row=5, column=2, sticky="W")
+
+        contButt = ttk.Button(self, text="Enter", style='my.TButton',
+                              command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get()))
+        contButt.grid(row=9, column=1, pady = (40,0))
+
+
+def getGearValues(controller, shoeVal, harnVal, ropeVal):
+    print(shoeVal, harnVal, ropeVal)
+    return
+
+
 class NewMemPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
-        myFont = ("Helvetica", 12)
         # Making a label object
         tFrame = Frame(self)
         label = Label(self, text="Make your account here", font=14)
@@ -147,7 +179,7 @@ class NewMemPage(Frame):
         vM = StringVar()
         memLabel = Label(self, text="Choose membership:", font=myFont)
         memLabel.grid(row=4, column=1, columnspan=2, sticky='W', pady=(15, 10))
-        casMem = Radiobutton(self, text="Casual", value= "Casual", variable=vM)
+        casMem = Radiobutton(self, text="Casual", value="Casual", variable=vM)
         casMem.grid(row=5, column=0, sticky="E")
         regMem = Radiobutton(self, text="Regular", value="Regular", variable=vM)
         regMem.grid(row=5, column=1)
@@ -158,11 +190,11 @@ class NewMemPage(Frame):
         vC = StringVar()
         memLabel = Label(self, text="Choose climber type:", font=myFont)
         memLabel.grid(row=6, column=1, columnspan=2, sticky='W', pady=(15, 10))
-        casMem = Radiobutton(self, text="Boulder",  value= "Boulder", variable=vC)
+        casMem = Radiobutton(self, text="Boulder", value="Boulder", variable=vC)
         casMem.grid(row=7, column=0, sticky="E")
-        regMem = Radiobutton(self, text="Top Rope", value= "Top Rope", variable=vC)
+        regMem = Radiobutton(self, text="Top Rope", value="Top Rope", variable=vC)
         regMem.grid(row=7, column=1)
-        preMem = Radiobutton(self, text="Lead",value= "Lead", variable=vC)
+        preMem = Radiobutton(self, text="Lead", value="Lead", variable=vC)
         preMem.grid(row=7, column=2, sticky="W")
 
         # Sign yo waiver!
@@ -170,29 +202,49 @@ class NewMemPage(Frame):
         waiver = Checkbutton(self, text="Sign Waiver", variable=cW, command=lambda: fc("Im a little gay checkbox"))
         waiver.grid(row=8, column=0, columnspan=2, pady=(10, 5), padx=(40, 0), sticky='W')
 
-        contButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: getNewMemValues(controller, nameEntry.get(), phoneEntry.get(), vM.get(), vC.get(), cW.get()))
+        contButt = ttk.Button(self, text="Enter", style='my.TButton',
+                              command=lambda: getNewMemValues(controller, nameEntry.get(), phoneEntry.get(), vM.get(),
+                                                              vC.get(), cW.get()))
         contButt.grid(row=9, column=1)
 
 
 def getNewMemValues(controller, name, phone, memType, climbType, checkState):
-    #name = nameEntry.get()
+    # name = nameEntry.get()
+    print(len(memType), climbType)
     if checkState == 0:
         popupWaiver()
+    elif (len(name) or len(phone)) == 0 or (len(memType) or len(climbType)) == 0:
+        popupFillValue()
     else:
         print(name, phone, memType, climbType, checkState)
-        controller.showPage(RoutePage)
+        controller.showPage(GearPage)
 
 
 # This pop-up will display if you have not filled out the waiver
 def popupWaiver():
     popup = Tk()
     popup.wm_title("!!!")
-    #Make it nice and center
+    # Make it nice and center
     popup.geometry("250x100+350+200")
-    #Tell them what to do
+    # Tell them what to do
     label = ttk.Label(popup, text="You must sign the waiver fool", font=myFont)
     label.pack(side="top", pady=10)
-    #Destroys pop-up when you hit ok, until next time..
-    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
-    B1.pack(pady = 10)
+    # Destroys pop-up when you hit ok, until next time..
+    B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
+    B1.pack(pady=10)
+    popup.mainloop()
+
+
+# This pop-up will display if you have not filled out all the values asked
+def popupFillValue():
+    popup = Tk()
+    popup.wm_title("!!!")
+    # Make it nice and center
+    popup.geometry("250x100+350+200")
+    # Tell them what to do
+    label = ttk.Label(popup, text="Please enter all the information", font=myFont)
+    label.pack(side="top", pady=10)
+    # Destroys pop-up when you hit ok, until next time..
+    B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
+    B1.pack(pady=10)
     popup.mainloop()
