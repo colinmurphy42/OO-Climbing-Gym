@@ -5,11 +5,10 @@ class OOGym:
         self.db = DB.DB()
         self.dailyCust = []
         self.dbMem = None
-        self.memberObj = None
 
     def checkIn(self, phone): # Might add all chekcing in processes here to connect UI
         self.dbMem = self.db.getMember(phone)
-        self.member = checkingIn.checkingIn(mem)
+        self.member = checkingIn.checkingIn(self.dbMem)
 
     def pickgear(self, shoes, rope , harness):
         if (shoes == True):

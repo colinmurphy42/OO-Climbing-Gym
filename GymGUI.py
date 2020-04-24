@@ -47,7 +47,7 @@ class gymGUI(Tk):
         page.tkraise()
 
 
-def fc(say="Basic bitch"):
+def fc(say="Basic boy"):
     print(say)
 
 
@@ -96,12 +96,24 @@ class CheckInPage(Frame):
         loginLabel.grid(row=2, column=0, sticky="E", pady=(40, 5))
         loginEntry.grid(row=2, column=1, sticky="W", pady=(40, 5))
 
-        enterButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        enterButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: checkInValues(controller, loginEntry.get()))
         enterButt.grid(row=3, column=1, pady=(40, 10))
 
         signUpButt = ttk.Button(self, text="New? Sign Up Here", style='my.TButton',
                                 command=lambda: controller.showPage(NewMemPage))
         signUpButt.grid(row=4, column=1, pady=10)
+
+
+def checkInValues(controller, phoneLogin):
+    if len(phoneLogin) == 0:
+        popupFillValue()
+    else:
+        print(phoneLogin)
+        gym.checkIn(phoneLogin)
+        print(gym.dbMem)
+        controller.showPage(GearPage)
+
+
 
 
 class RoutePage(Frame):
@@ -174,7 +186,7 @@ class NewMemPage(Frame):
         phoneLabel.grid(row=3, column=0, sticky="E", pady=10)
         phoneEntry.grid(row=3, column=1, sticky="W", pady=10)
 
-        # Checkbox Group 1
+        # Radio button Group 1
         vM = StringVar()
         memLabel = Label(self, text="Choose membership:", font=myFont)
         memLabel.grid(row=4, column=1, columnspan=2, sticky='W', pady=(15, 10))
@@ -185,7 +197,7 @@ class NewMemPage(Frame):
         preMem = Radiobutton(self, text="Premium", value="Premium", variable=vM)
         preMem.grid(row=5, column=2, sticky="W")
 
-        # Checkbox Group 2
+        # Radio button Group 2
         vC = StringVar()
         memLabel = Label(self, text="Choose climber type:", font=myFont)
         memLabel.grid(row=6, column=1, columnspan=2, sticky='W', pady=(15, 10))
@@ -198,7 +210,7 @@ class NewMemPage(Frame):
 
         # Sign yo waiver!
         cW = IntVar()
-        waiver = Checkbutton(self, text="Sign Waiver", variable=cW, command=lambda: fc("Im a little gay checkbox"))
+        waiver = Checkbutton(self, text="Sign Waiver", variable=cW)
         waiver.grid(row=8, column=0, columnspan=2, pady=(10, 5), padx=(40, 0), sticky='W')
 
         contButt = ttk.Button(self, text="Enter", style='my.TButton',
