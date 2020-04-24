@@ -1,35 +1,39 @@
 import DB, checkingIn, ClimbArea
 
 class OOGym:
-    def __init__():
+    def __init__(self):
         self.db = DB.DB()
         self.dailyCust = []
 
+    def checkIn(self, phone): # Might add all chekcing in processes here to connect UI
+        mem = self.db.getMember(phone)
+        self.member = checkingIn.checkingIn(mem)
 
-    #def checkIn(phone): # Might add all chekcing in processes here to connect UI
-    #pass
+    def pickgear():
+        if (shoes == True):
+            self.member = checkingIn.Shoes(checkObj, memObj)
+        if (Rope == True):
+            self.member = checkingIn.Rope(checkObj, memObj)
+        if (Harness == True):
+            self.member = checkingIn.Harness(checkObj, memObj)
 
-    #     memObj = self.db.getMember(phone)
-    #     checkObj = checkingIn.checkingIn(memObj)
-    # if (shoes == True):
-    #     checkObj = checkingIn.Shoes(checkObj, memObj)
-    # if (Rope == True):
-    #     checkObj = checkingIn.Rope(checkObj, memObj)
-    # if (Harness == True):
-    #     checkObj = checkingIn.Harness(checkObj, memObj)
-    #
-    # rec = {'date' : datetime.now() - timedelta(hours=7)}
-    # rec.update(checkObj.checkout())
-    # self.dailyCust.append(rec)
-    # return (rec)
-
-
-    def addGear(mem):
-        pass
+    def checkOut():
+        rec = {'date' : datetime.now() - timedelta(hours=7)}
+        rec.update(self.member.checkout())
+        self.dailyCust.append(rec)
+        return (rec)
 
     def closing():
         data = {'date' : datetime.now() - timedelta(hours=7) , 'dailyReceipts' : self.dailyCust}
 
     def adduser(self, name, phone , M,C):
-        self.db.addUser(name, phone, M , C)
-        return ("User: " + name + " added! :)")
+        exist = False
+        cursor = self.db.coll()
+        for i in cursor:
+            if i['phone'] == phone:
+                exist = True
+        if exist == False:
+            self.db.addUser(name, phone, M , C)
+            return ("User: " + name + " added! :)")
+        else:
+            return ("Phone already exists")

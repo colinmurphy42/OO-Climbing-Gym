@@ -38,6 +38,9 @@ class DB:
         self._collection.insert_one(data)
         print("added")
 
+    def coll(self):
+        return self._collection.find({})
+
     # adds receipt to database
     def addRec(self, phone , desc, total):
         data = {'date' : datetime.now() - timedelta(hours=7)}

@@ -8,13 +8,12 @@ from tkinter import ttk
 import OOGym
 
 myFont = ("Helvetica", 12)
-
+gym = OOGym.OOGym()
 
 class gymGUI(Tk):
 
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
-
         # Some window details
         self.title("OO CLimbing Gym")
         self.geometry("400x450+300+50")
@@ -179,7 +178,7 @@ def getNewMemValues(controller, name, phone, memType, climbType, checkState):
     if checkState == 0:
         popupWaiver()
     else:
-        print(name, phone, memType, climbType, checkState)
+        gym.adduser(name, phone, memType, climbType)
         controller.showPage(RoutePage)
 
 
