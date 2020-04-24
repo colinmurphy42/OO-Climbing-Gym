@@ -4,23 +4,26 @@ class OOGym:
     def __init__(self):
         self.db = DB.DB()
         self.dailyCust = []
+        self.dbMem = None
+        self.memberObj = None
 
     def checkIn(self, phone): # Might add all chekcing in processes here to connect UI
-        mem = self.db.getMember(phone)
+        self.dbMem = self.db.getMember(phone)
         self.member = checkingIn.checkingIn(mem)
 
-    def pickgear():
+    def pickgear(self, shoes, rope , harness):
         if (shoes == True):
-            self.member = checkingIn.Shoes(checkObj, memObj)
-        if (Rope == True):
-            self.member = checkingIn.Rope(checkObj, memObj)
-        if (Harness == True):
-            self.member = checkingIn.Harness(checkObj, memObj)
+            self.member = checkingIn.Shoes(self.member, self.member.member)
+        if (rope == True):
+            self.member = checkingIn.Rope(self.member, self.member.member)
+        if (harness == True):
+            self.member = checkingIn.Harness(self.member, self.member.member)
 
     def checkOut():
         rec = {'date' : datetime.now() - timedelta(hours=7)}
         rec.update(self.member.checkout())
         self.dailyCust.append(rec)
+        self.member = None
         return (rec)
 
     def closing():

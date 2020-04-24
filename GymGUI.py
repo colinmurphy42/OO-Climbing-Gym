@@ -216,7 +216,7 @@ def getNewMemValues(controller, name, phone, memType, climbType, checkState):
         popupFillValue()
     else:
         gym.adduser(name, phone, memType, climbType)
-        controller.showPage(RoutePage)
+        controller.showPage(GearPage)
 
 
 # This pop-up will display if you have not filled out the waiver
