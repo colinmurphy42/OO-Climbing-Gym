@@ -4,10 +4,11 @@ class OOGym:
     def __init__(self):
         self.db = DB.DB()
         self.dailyCust = []
+        self.dbMem = None
 
     def checkIn(self, phone): # Might add all chekcing in processes here to connect UI
-        mem = self.db.getMember(phone)
-        self.member = checkingIn.checkingIn(mem)
+        self.dbMem = self.db.getMember(phone)
+        self.member = checkingIn.checkingIn(self.dbMem)
 
     def pickgear():
         if (shoes == True):
