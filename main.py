@@ -1,8 +1,10 @@
 import checkingIn
 import DB
+import GymGUI
 import ClimbArea as ca
 
 def main():
+    '''
     # OSCAR WORK
     db = DB.DB()
     member = db.getMember("1234")
@@ -13,6 +15,11 @@ def main():
 
     print(test.member)
     print(test.getDescription() + " for a total: " + str(test.total()))
+    '''
+    #THIS RUNS GUI
+    app = GymGUI.gymGUI()
+    app.mainloop()
+
     # # test.checkout()
     #
     # # Creating climbing areas and adding them to area list
