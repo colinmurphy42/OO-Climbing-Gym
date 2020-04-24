@@ -170,11 +170,11 @@ class NewMemPage(Frame):
         waiver = Checkbutton(self, text="Sign Waiver", variable=cW, command=lambda: fc("Im a little gay checkbox"))
         waiver.grid(row=8, column=0, columnspan=2, pady=(10, 5), padx=(40, 0), sticky='W')
 
-        contButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: getCheckInValues(controller, nameEntry.get(), phoneEntry.get(), vM.get(), vC.get(), cW.get()))
+        contButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: getNewMemValues(controller, nameEntry.get(), phoneEntry.get(), vM.get(), vC.get(), cW.get()))
         contButt.grid(row=9, column=1)
 
 
-def getCheckInValues(controller, name, phone, memType, climbType, checkState):
+def getNewMemValues(controller, name, phone, memType, climbType, checkState):
     #name = nameEntry.get()
     if checkState == 0:
         popupWaiver()
@@ -183,12 +183,16 @@ def getCheckInValues(controller, name, phone, memType, climbType, checkState):
         controller.showPage(RoutePage)
 
 
+# This pop-up will display if you have not filled out the waiver
 def popupWaiver():
     popup = Tk()
     popup.wm_title("!!!")
+    #Make it nice and center
     popup.geometry("250x100+350+200")
+    #Tell them what to do
     label = ttk.Label(popup, text="You must sign the waiver fool", font=myFont)
     label.pack(side="top", pady=10)
+    #Destroys pop-up when you hit ok, until next time..
     B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
     B1.pack(pady = 10)
     popup.mainloop()
