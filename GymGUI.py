@@ -9,6 +9,8 @@ import OOGym
 
 myFont = ("Helvetica", 12)
 gym = OOGym.OOGym()
+gym.establishRoutes()
+
 
 class gymGUI(Tk):
 
@@ -39,6 +41,14 @@ class gymGUI(Tk):
             page.grid(row=0, column=0, sticky="nsew")
 
         self.showPage(MainPage)
+
+    def refreshPage(self, refPage):
+        page = refPage(self.mainContain, self)
+        self.pages[refPage] = page
+        # The page will "stick" to entire size of the container
+        page.grid(row=0, column=0, sticky="nsew")
+
+
 
     def showPage(self, controller):
         # Find the page we want in the pages dictionary
@@ -96,7 +106,8 @@ class CheckInPage(Frame):
         loginLabel.grid(row=2, column=0, sticky="E", pady=(40, 5))
         loginEntry.grid(row=2, column=1, sticky="W", pady=(40, 5))
 
-        enterButt = ttk.Button(self, text="Enter", style='my.TButton', command=lambda: checkInValues(controller, loginEntry.get()))
+        enterButt = ttk.Button(self, text="Enter", style='my.TButton',
+                               command=lambda: checkInValues(controller, loginEntry.get()))
         enterButt.grid(row=3, column=1, pady=(40, 10))
 
         signUpButt = ttk.Button(self, text="New? Sign Up Here", style='my.TButton',
@@ -114,8 +125,6 @@ def checkInValues(controller, phoneLogin):
         controller.showPage(GearPage)
 
 
-
-
 class RoutePage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -126,6 +135,20 @@ class RoutePage(Frame):
         # Lambda helps us get around parameter problems in
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
+
+        areaInfo = []
+        areaCounter = 3
+        for a in gym.ondra.areaList:
+            txtN = Text(self, height=1, width=60,font = ("Helvetica", 8))
+            txtN.grid(row=areaCounter, column=0, padx=(10, 0), pady=(10, 0))
+            txtN.insert(END, a.name + ":")
+            areaCounter += 1
+            txtR = Text(self, height=1, width=60,  font=("Helvetica", 8))
+            txtR.grid(row=areaCounter, column=0, padx=(10, 0), pady=(10, 0), sticky = 'E')
+            txtR.insert(END, a.routes)
+            areaCounter += 1
+            #areaInfo.append((a.name, a.routes))
+        #print("Son",str(areaInfo))
 
 
 class GearPage(Frame):
@@ -154,7 +177,7 @@ class GearPage(Frame):
 
         contButt = ttk.Button(self, text="Enter", style='my.TButton',
                               command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get()))
-        contButt.grid(row=9, column=1, pady = (40,0))
+        contButt.grid(row=9, column=1, pady=(40, 0))
 
 
 def getGearValues(controller, shoeVal, harnVal, ropeVal):

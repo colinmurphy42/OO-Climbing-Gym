@@ -44,18 +44,18 @@ class RouteSetter(object):
 
     def initAllRoutes(self):
         # Gives all the areas routes
-        print("Setting all routes")
+        #print("Setting all routes")
         for area in self.areaList:
             area.routes = area.setRoutes(area.wallSize)
-            print(area.name, "now has these routes:", area.routes)
+            #print(area.name, "now has these routes:", area.routes)
 
     def setNextRoute(self):
         # Get the next area and change its routes
         nextArea = self.areaList[self.areaCounter]
-        print("Setting ", nextArea.name)
+        #print("Setting ", nextArea.name)
         self.areaList[self.areaCounter].routes = nextArea.setRoutes(nextArea.wallSize)
         # This is for documentation of changes
-        print("New routes: ", self.areaList[self.areaCounter].routes)
+        #print("New routes: ", self.areaList[self.areaCounter].routes)
         # Increase counter
         self.increaseCounter()
 
