@@ -32,20 +32,17 @@ class gymGUI(Tk):
         self.pages = {}
 
         # ******Must add new page here for it to be connected to others*********
-        for P in (MainPage, CheckInPage, RoutePage, NewMemPage, GearPage):
+        for P in (MainPage, CheckInPage, RoutePage, NewMemPage, GearPage,CheckOutPage):
             page = P(mainContain, self)
             self.pages[P] = page
             # The page will "stick" to entire size of the container
             page.grid(row=0, column=0, sticky="nsew")
-
-        self.showPage(MainPage)
 
     def showPage(self, controller):
         # Find the page we want in the pages dictionary
         page = self.pages[controller]
         # Raise that page to the front
         page.tkraise()
-
 
 def fc(say="Basic boy"):
     print(say)
@@ -104,14 +101,12 @@ class CheckInPage(Frame):
         signUpButt.grid(row=4, column=1, pady=10)
 
 
-def checkInValues(controller, phoneLogin):
-    if len(phoneLogin) == 0:
-        popupFillValue()
-    else:
-        print(phoneLogin)
-        gym.checkIn(phoneLogin)
-        print(gym.dbMem)
-        controller.showPage(GearPage)
+        def checkInValues(controller, phoneLogin):
+            if len(phoneLogin) == 0:
+                popupFillValue()
+            else:
+                gym.checkIn(phoneLogin)
+                controller.showPage(GearPage)
 
 
 
@@ -157,10 +152,29 @@ class GearPage(Frame):
         contButt.grid(row=9, column=1, pady = (40,0))
 
 
-def getGearValues(controller, shoeVal, harnVal, ropeVal):
-    print(shoeVal, harnVal, ropeVal)
-    return
+        def getGearValues(controller, shoeVal, harnVal, ropeVal):
+            gym.pickgear(shoeVal, ropeVal, harnVal)
+            controller.showPage(CheckOutPage)
 
+class CheckOutPage(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+        # Making a label object
+        label = Label(self, text="Checking out" + gym.dbMem['name'], font=14)
+        label.grid(row=0, column=0, columnspan=3, sticky="W", padx=(0, 0), pady=(50, 2))
+        # Lambda helps us get around parameter problems in
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt.grid(row=0, column=0, sticky="nw")
+
+        contButt = ttk.Button(self, text="Check Out", style='my.TButton',
+                              command=lambda: checkOut(controller))
+        contButt.grid(row=9, column=1, pady = (40,0))
+
+        def checkOut(controller):
+            gym.checkOut();
+            print("Receipt added")
+            print (gym.dailyCust)
+            controller.showPage(MainPage)
 
 class NewMemPage(Frame):
     def __init__(self, parent, controller):
@@ -219,16 +233,16 @@ class NewMemPage(Frame):
         contButt.grid(row=9, column=1)
 
 
-def getNewMemValues(controller, name, phone, memType, climbType, checkState):
-    # name = nameEntry.get()
-    print(len(memType), climbType)
-    if checkState == 0:
-        popupWaiver()
-    elif (len(name) or len(phone)) == 0 or (len(memType) or len(climbType)) == 0:
-        popupFillValue()
-    else:
-        gym.adduser(name, phone, memType, climbType)
-        controller.showPage(GearPage)
+        def getNewMemValues(controller, name, phone, memType, climbType, checkState):
+            # name = nameEntry.get()
+            print(len(memType), climbType)
+            if checkState == 0:
+                popupWaiver()
+            elif (len(name) or len(phone)) == 0 or (len(memType) or len(climbType)) == 0:
+                popupFillValue()
+            else:
+                gym.adduser(name, phone, memType, climbType)
+                controller.showPage(GearPage)
 
 
 # This pop-up will display if you have not filled out the waiver

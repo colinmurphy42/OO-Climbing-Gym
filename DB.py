@@ -29,7 +29,7 @@ class DB:
         print("changed membership from: " + past + " to : " + now)
 
     # adds new member to database
-    def addUser(self, name, mem, climb, phone):
+    def addUser(self, name, phone,mem, climb):
         data = {'name' : name}
         data.update({'memType' : mem})
         data.update({'climbType' : climb})

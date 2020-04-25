@@ -1,10 +1,12 @@
 import DB, checkingIn, ClimbArea
+from datetime import tzinfo, timedelta, datetime
 
 class OOGym:
     def __init__(self):
         self.db = DB.DB()
         self.dailyCust = []
-        self.dbMem = None
+        self.dbMem = {'name' : ''}
+        self.member = None
 
     def checkIn(self, phone): # Might add all chekcing in processes here to connect UI
         self.dbMem = self.db.getMember(phone)
@@ -18,15 +20,15 @@ class OOGym:
         if (harness == True):
             self.member = checkingIn.Harness(self.member, self.member.member)
 
-    def checkOut():
-        rec = {'date' : datetime.now() - timedelta(hours=7)}
+    def checkOut(self):
+        rec = {'date' : datetime.now()}
         rec.update(self.member.checkout())
         self.dailyCust.append(rec)
         self.member = None
         return (rec)
 
     def closing():
-        data = {'date' : datetime.now() - timedelta(hours=7) , 'dailyReceipts' : self.dailyCust}
+        data = {'date' : datetime.now() , 'dailyReceipts' : self.dailyCust}
 
     def adduser(self, name, phone , M,C):
         exist = False
