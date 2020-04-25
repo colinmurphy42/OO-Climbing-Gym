@@ -1,4 +1,4 @@
-import DB, checkingIn, ClimbArea
+import DB, checkingIn, ClimbArea as ca
 from datetime import tzinfo, timedelta, datetime
 
 class OOGym:
