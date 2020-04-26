@@ -34,17 +34,20 @@ class gymGUI(Tk):
         self.pages = {}
 
         # ******Must add new page here for it to be connected to others*********
-        for P in (MainPage, CheckInPage, RoutePage, NewMemPage, GearPage,CheckOutPage):
+        for P in (MainPage, CheckInPage, RoutePage, NewMemPage, GearPage, CheckOutPage):
             page = P(mainContain, self)
             self.pages[P] = page
             # The page will "stick" to entire size of the container
             page.grid(row=0, column=0, sticky="nsew")
+
+        self.showPage(MainPage)
 
     def showPage(self, controller):
         # Find the page we want in the pages dictionary
         page = self.pages[controller]
         # Raise that page to the front
         page.tkraise()
+
 
 def fc(say="Basic boy"):
     print(say)
@@ -103,7 +106,6 @@ class CheckInPage(Frame):
                                 command=lambda: controller.showPage(NewMemPage))
         signUpButt.grid(row=4, column=1, pady=10)
 
-
         def checkInValues(controller, phoneLogin):
             if len(phoneLogin) == 0:
                 popupFillValue()
@@ -116,7 +118,7 @@ class RoutePage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         tFrame = Frame(self)
-        label = Label(self, text="Here's some gnar gnar", font=14)
+        label = Label(self, text="Here's our current routes", font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
@@ -126,16 +128,18 @@ class RoutePage(Frame):
         areaInfo = []
         areaCounter = 3
         for a in gym.ondra.areaList:
-            txtN = Text(self, height=1, width=60,font = ("Helvetica", 8))
+            txtN = Text(self, height=1, width=10, font=("Helvetica", 8))
             txtN.grid(row=areaCounter, column=0, padx=(10, 0), pady=(10, 0))
             txtN.insert(END, a.name + ":")
+            txtN.config(state=DISABLED)
             areaCounter += 1
-            txtR = Text(self, height=1, width=60,  font=("Helvetica", 8))
-            txtR.grid(row=areaCounter, column=0, padx=(10, 0), pady=(10, 0), sticky = 'E')
+            txtR = Text(self, height=1, width=62, font=("Helvetica", 8))
+            txtR.grid(row=areaCounter, column=0, padx=(10, 0), pady=(10, 0), sticky='E')
             txtR.insert(END, a.routes)
+            txtR.config(state=DISABLED)
             areaCounter += 1
-            #areaInfo.append((a.name, a.routes))
-        #print("Son",str(areaInfo))
+            # areaInfo.append((a.name, a.routes))
+        # print("Son",str(areaInfo))
 
 
 class GearPage(Frame):
@@ -166,10 +170,10 @@ class GearPage(Frame):
                               command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get()))
         contButt.grid(row=9, column=1, pady=(40, 0))
 
-
         def getGearValues(controller, shoeVal, harnVal, ropeVal):
             gym.pickgear(shoeVal, ropeVal, harnVal)
             controller.showPage(CheckOutPage)
+
 
 class CheckOutPage(Frame):
     def __init__(self, parent, controller):
@@ -177,19 +181,21 @@ class CheckOutPage(Frame):
         # Making a label object
         label = Label(self, text="Checking out" + gym.dbMem['name'], font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="W", padx=(0, 0), pady=(50, 2))
+
         # Lambda helps us get around parameter problems in
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         contButt = ttk.Button(self, text="Check Out", style='my.TButton',
                               command=lambda: checkOut(controller))
-        contButt.grid(row=9, column=1, pady = (40,0))
+        contButt.grid(row=9, column=1, pady=(40, 0))
 
         def checkOut(controller):
             gym.checkOut();
             print("Receipt added")
-            print (gym.dailyCust)
+            print(gym.dailyCust)
             controller.showPage(MainPage)
+
 
 class NewMemPage(Frame):
     def __init__(self, parent, controller):
@@ -246,7 +252,6 @@ class NewMemPage(Frame):
                               command=lambda: getNewMemValues(controller, nameEntry.get(), phoneEntry.get(), vM.get(),
                                                               vC.get(), cW.get()))
         contButt.grid(row=9, column=1)
-
 
         def getNewMemValues(controller, name, phone, memType, climbType, checkState):
             # name = nameEntry.get()
