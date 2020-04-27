@@ -150,28 +150,38 @@ class GearPage(Frame):
         Frame.__init__(self, parent)
 
         # Home button
-        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self,lMainPage))
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self,MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         label = Label(self, text="Gear Shop", font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 30))
 
+        #This is for presenting the right gear based on your climber type
+        gearOptions = [ACTIVE, DISABLED, DISABLED]
+
+        if gym.dbMem['climbType'] == 'Top Rope':
+            gearOptions[1] = ACTIVE
+        elif gym.dbMem['climbType'] == 'Lead':
+            gearOptions[1] = ACTIVE
+            gearOptions[2] = ACTIVE
+
         # Checkbox Group 1
         gS = IntVar()
-        shoes = Checkbutton(self, text="Shoes", variable=gS)
+        shoes = Checkbutton(self, text="Shoes", variable=gS, state = gearOptions[0])
         shoes.grid(row=5, column=0, sticky="E")
 
         gH = IntVar()
-        harness = Checkbutton(self, text="Harness", variable=gH)
+        harness = Checkbutton(self, text="Harness", variable=gH, state=gearOptions[1])
         harness.grid(row=5, column=1)
 
         gR = IntVar()
-        rope = Checkbutton(self, text="Rope", variable=gR)
+        rope = Checkbutton(self, text="Rope", variable=gR, state = gearOptions[2])
         rope.grid(row=5, column=2, sticky="W")
 
         contButt = ttk.Button(self, text="Enter", style='my.TButton',
                               command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get(), self))
         contButt.grid(row=9, column=1, pady=(40, 0))
+
 
         def getGearValues(controller, shoeVal, harnVal, ropeVal, current):
             gym.pickgear(shoeVal, ropeVal, harnVal)
