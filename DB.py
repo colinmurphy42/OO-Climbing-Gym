@@ -22,7 +22,7 @@ class DB:
         print("changed Climbers type from: " + past + " to : " + now)
 
     # Changes members membership
-    def chgMem(self):
+    def chgMem(self, phone, change):
         past = self._collection.find_one({'phone' : phone})['memType']
         self._collection.update({'phone' : phone}, {'$set' : {'memType' : change}})
         now = self._collection.find_one({'phone' : phone})['memType']
