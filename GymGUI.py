@@ -26,8 +26,12 @@ class gymGUI(Tk):
         # Container is all encompassing
         self.mainContain.pack(side="top", fill="both", expand="True")
 
+        # Initializing gym, routes, and ticket pool
         self.__gym = OOGym.OOGym()
         self.__gym.establishRoutes()
+        self._ticketPool = OOGym.ticketPool(2)
+
+
         # Configure with min size and priority
         self.mainContain.grid_rowconfigure(0, weight=1)
         self.mainContain.grid_columnconfigure(0, weight=1)
@@ -46,7 +50,7 @@ class gymGUI(Tk):
 
     def showPage(self, current ,controller):
         # Find the page we want in the pages dictionary
-        page = controller(self.mainContain , self, self.__gym )
+        page = controller(self.mainContain , self, self.__gym, self._ticketPool)
         #self.pages[controller]
         page.grid(row=0, column=0, sticky="nsew")
         # Raise that page to the front
@@ -59,7 +63,7 @@ def fc(say="Basic boy"):
 
 
 class MainPage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym, tickP):
         # Pass in parent class and init frame
         Frame.__init__(self, parent)
         otherFont = ("Helvetica", 15)
@@ -89,7 +93,7 @@ class MainPage(Frame):
         employeeButt.pack(pady=(80,0), padx=10, side = "right")
 
 class EmployeePage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
         # Home button
         homeButt = ttk.Button(self, text="Home", style='my.TButton',
@@ -117,10 +121,11 @@ class EmployeePage(Frame):
 
             nextArea = gym.ondra.getNextSet()
             oldRoutes = str(nextArea.getRoutes())
+
             #This changes route and returns the new routes as a string list
             newRoutes = gym.ondra.setNextRoute()
             controller.showPage(current, RoutePage)
-            #print(nextArea.name, oldRoutes, newRoutes)
+
             # Tell them what to do
             label = ttk.Label(popup, text= nextArea.name + " has been set!", font=myFont)
             label.pack(side="top", pady=10)
@@ -136,7 +141,7 @@ class EmployeePage(Frame):
 
 
 class CheckInPage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym,tickP):
         Frame.__init__(self, parent)
         # Making a label object
         label = Label(self, text="Enter Your Login ", font=14)
@@ -165,12 +170,17 @@ class CheckInPage(Frame):
             if len(phoneLogin) == 0:
                 popupFillValue()
             else:
-                gym.checkIn(phoneLogin)
-                controller.showPage(current ,GearPage)
+                tick = tickP.getTicket()
+                if tick == None:
+                    popupGymFull(False)
+                    controller.showPage(current, MainPage)
+                else:
+                    gym.checkIn(phoneLogin)
+                    controller.showPage(current ,GearPage)
 
 
 class RoutePage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
         tFrame = Frame(self)
         label = Label(self, text="Here's our current routes", font=14)
@@ -198,7 +208,7 @@ class RoutePage(Frame):
 
 
 class GearPage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
 
         # Home button
@@ -245,7 +255,7 @@ class GearPage(Frame):
             controller.showPage(current, CheckOutPage)
 
 class ChangeGearPage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
         # Making a label object
         tFrame = Frame(self)
@@ -282,7 +292,7 @@ class ChangeGearPage(Frame):
 
 
 class CheckOutPage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym,tickP):
         Frame.__init__(self, parent)
         # Making a label object
         label = Label(self, text="Checking out for: " + gym.dbMem['name'], font=14)
@@ -314,7 +324,7 @@ class CheckOutPage(Frame):
 
 
 class NewMemPage(Frame):
-    def __init__(self, parent, controller, gym):
+    def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
         # Making a label object
         tFrame = Frame(self)
@@ -376,8 +386,14 @@ class NewMemPage(Frame):
                 popupFillValue()
             else:
                 gym.adduser(name, phone, memType, climbType)
-                gym.checkIn(phone)
-                controller.showPage(self, GearPage)
+
+                tick = tickP.getTicket()
+                if tick == None:
+                    popupGymFull(True)
+                    controller.showPage(current, MainPage)
+                else:
+                    gym.checkIn(phone)
+                    controller.showPage(self, GearPage)
 
 
 # This pop-up will display if you have not filled out the waiver
@@ -404,6 +420,26 @@ def popupFillValue():
     # Tell them what to do
     label = ttk.Label(popup, text="Please enter all the information", font=myFont)
     label.pack(side="top", pady=10)
+    # Destroys pop-up when you hit ok, until next time..
+    B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
+    B1.pack(pady=10)
+    popup.mainloop()
+
+# This pop-up will display if you have not filled out all the values asked
+def popupGymFull(newMemBool):
+    popup = Tk()
+    popup.wm_title("We're Sorry")
+    # Make it nice and center
+    popup.geometry("300x120+350+200")
+    # Says something different depending on what screen it is triggered
+    if newMemBool == False:
+        label = ttk.Label(popup, text="We are sorry but the gym is at capacity", font=myFont)
+        label.pack(side="top", pady=10)
+    else:
+        label = ttk.Label(popup, text="Account Created Succesfully", font=myFont)
+        label.pack(side="top", pady=2)
+        label2 = ttk.Label(popup, text="However Gym is Currently Full", font=myFont)
+        label2.pack(side="top", pady=(2,10))
     # Destroys pop-up when you hit ok, until next time..
     B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
     B1.pack(pady=10)

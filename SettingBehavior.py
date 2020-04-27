@@ -4,7 +4,7 @@ import numpy as np
 
 # Gets the route grading distribution for new sets
 def routeDistr(str):
-    # We can make this cooler later, right now just adds more moderate routes than easy or hard
+    # Right now just adds more moderate routes than easy or hard
     if str == "boulder":
         return [0.1, 0.1, 0.13, 0.14, 0.13, 0.12, 0.1, 0.08, 0.045, 0.025, 0.025, 0.005]
     if str == "bigwall":

@@ -1,5 +1,9 @@
+# Source:
+# https://sourcemaking.com/design_patterns/object_pool/python/1
+
 import DB, checkingIn, ClimbArea as ca
 from datetime import tzinfo, timedelta, datetime
+
 
 class OOGym:
     def __init__(self):
@@ -62,3 +66,29 @@ class OOGym:
         self.ondra = ca.RouteSetter(areaList)
         self.ondra.initAllRoutes()
         self.ondra.addNewArea(ca.BoulderArea("Slab", 16))
+
+# Object Pool Pattern Here:
+class ticketPool:
+    def __init__(self, poolSize):
+        self.tickets = []
+        # Make an array of ticket objects as large as the pool size
+        for i in range(poolSize):
+            self.tickets.append(Ticket(i))
+        #self._tickets = [Ticket() for _ in range(poolSize)]
+
+    # Retrieving a ticket
+    def getTicket(self):
+        if len(self.tickets) == 0:
+            print("No more tickets")
+            return None
+        return self.tickets.pop()
+
+    # Returning a ticket
+    def releaseTicket(self, ticket):
+        self.tickets.append(ticket)
+
+# Ticker objects to keep track of capacity
+class Ticket:
+    def __init__(self, ticketNum):
+        # Make an array of ticket objects as large as the pool size
+        self.ticketNumber = ticketNum + 1
