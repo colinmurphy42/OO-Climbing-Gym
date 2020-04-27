@@ -10,7 +10,7 @@ class OOGym:
         self.gMember = None
         self.ondra = None
 
-    def checkIn(self, phone): # Might add all chekcing in processes here to connect UI
+    def checkIn(self, phone): # Might add all checking in processes here to connect UI
         self.dbMem = self.db.getMember(phone)
         self.member = checkingIn.checkingIn(self.dbMem)
 
@@ -52,16 +52,13 @@ class OOGym:
     def changeClimberType(self, phone, change):
         self.db.chgType(phone, change)
 
+    # This function initializes the gyms routes and route setter
     def establishRoutes(self):
         # Creating climbing areas and adding them to area list
         areaList = [ca.BoulderArea("Cave", 15), ca.BigWallArea("Yosemite", 16), ca.BoulderArea("Comp", 9),
                     ca.BigWallArea("Flat Iron", 12)]
+
         # Our route setter
         self.ondra = ca.RouteSetter(areaList)
         self.ondra.initAllRoutes()
-        #for i in range(9):
-        #    ondra.setNextRoute()
-        # Areas will be part of the setter class after they are initialized
-        #for a in self.ondra.areaList:
-            #print(a.name, a.routes)
         self.ondra.addNewArea(ca.BoulderArea("Slab", 16))

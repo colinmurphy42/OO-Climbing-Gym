@@ -110,7 +110,28 @@ class EmployeePage(Frame):
         closeButt.pack(pady=10, padx=10)
 
         def changeArea(current, controller):
+            popup = Tk()
+            popup.wm_title("Setting Route")
+            # Make it nice and center
+            popup.geometry("525x175+250+200")
+
+            nextArea = gym.ondra.getNextSet()
+            oldRoutes = str(nextArea.getRoutes())
+            #This changes route and returns the new routes as a string list
+            newRoutes = gym.ondra.setNextRoute()
             controller.showPage(current, RoutePage)
+            #print(nextArea.name, oldRoutes, newRoutes)
+            # Tell them what to do
+            label = ttk.Label(popup, text= nextArea.name + " has been set!", font=myFont)
+            label.pack(side="top", pady=10)
+            oldLabel = ttk.Label(popup, text="Was: " + oldRoutes, font=("Helvetica", 8))
+            oldLabel.pack(side="top", pady=10)
+            newLabel = ttk.Label(popup, text="Now: " + str(newRoutes), font=("Helvetica", 8))
+            newLabel.pack(side="top", pady=10)
+            # Destroys pop-up when you hit ok, until next time..
+            B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
+            B1.pack(pady=10)
+            popup.mainloop()
 
 
 
@@ -118,8 +139,8 @@ class CheckInPage(Frame):
     def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
         # Making a label object
-        label = Label(self, text="Enter Your Information ", font=14)
-        label.grid(row=0, column=0, columnspan=3, sticky="W", padx=(0, 0), pady=(50, 2))
+        label = Label(self, text="Enter Your Login ", font=14)
+        label.grid(row=0, column=1, columnspan=3, sticky="W", padx=(10, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self,MainPage))
@@ -129,7 +150,7 @@ class CheckInPage(Frame):
         loginLabel = Label(self, text="Phone Number:", font=myFont)
         loginEntry = Entry(self)
 
-        loginLabel.grid(row=2, column=0, sticky="E", pady=(40, 5))
+        loginLabel.grid(row=2, column=0, sticky="E", padx=(25, 0), pady=(40, 5))
         loginEntry.grid(row=2, column=1, sticky="W", pady=(40, 5))
 
         enterButt = ttk.Button(self, text="Enter", style='my.TButton',
@@ -153,7 +174,7 @@ class RoutePage(Frame):
         Frame.__init__(self, parent)
         tFrame = Frame(self)
         label = Label(self, text="Here's our current routes", font=14)
-        label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 2))
+        label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(5, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(None, MainPage))
@@ -298,7 +319,7 @@ class NewMemPage(Frame):
         # Making a label object
         tFrame = Frame(self)
         label = Label(self, text="Make your account here", font=14)
-        label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 2))
+        label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(45, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self, MainPage))
