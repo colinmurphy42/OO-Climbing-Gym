@@ -4,7 +4,7 @@ class checkingIn:
         self.member = mem
 
     def getDescription(self):
-        return self.member['name']
+        return (self.member['name'] + "\nDailypass: $20")
 
     def gearcost(self):
         return 0
@@ -37,7 +37,7 @@ class Shoes(GearDec):
         self.tmp = checkingIn
 
     def getDescription(self):
-        return self.tmp.getDescription() + ", Shoes"
+        return self.tmp.getDescription() + "\nShoes: $3"
 
     def gearcost(self):
         return self.tmp.gearcost() + 3
@@ -53,7 +53,7 @@ class Harness(GearDec):
         self.tmp = checkingIn
 
     def getDescription(self):
-        return self.tmp.getDescription() + ", Harness"
+        return self.tmp.getDescription() + "\nHarness $4"
 
     def gearcost(self):
         return self.tmp.gearcost() + 4
@@ -69,7 +69,7 @@ class Rope(GearDec):
         self.tmp = checkingIn
 
     def getDescription(self):
-        return self.tmp.getDescription() + ", Rope"
+        return self.tmp.getDescription() + "\nRope $5"
 
     def gearcost(self):
         return self.tmp.gearcost() + 5

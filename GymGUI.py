@@ -188,6 +188,16 @@ class CheckOutPage(Frame):
         # Lambda helps us get around parameter problems in
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self ,MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
+        txtN = Text(self, height=7, width=30, font=("Helvetica", 12))
+        txtN.grid(row=1, column=0, padx=(10, 0), pady=(10, 0))
+        txtN.insert(END, gym.showReceipt())
+        txtN.config(state=DISABLED)
+
+        txtz = Text(self, height=1, width=30, font=("Helvetica", 12))
+        txtz.grid(row=8, column=0, padx=(10, 0), pady=(10, 0))
+        txtz.insert(END, "Total with " + gym.dbMem['memType'] + " membership: $" + str(gym.gMember.total()) )
+        txtz.config(state=DISABLED)
+
 
         contButt = ttk.Button(self, text="Check Out", style='my.TButton',
                               command=lambda: checkOut(controller , self))
