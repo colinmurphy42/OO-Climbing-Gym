@@ -42,10 +42,6 @@ class DB:
         return self._collection.find({})
 
     # adds receipt to database
-    def addRec(self, phone , desc, total):
-        data = {'date' : datetime.now() - timedelta(hours=7)}
-        data.update({'phone' : phone})
-        data.update({'desciption' : desc})
-        data.update({'total' : total})
-        self._Receipts.insert_one(data)
+    def addRec(self, obj):
+        self._Receipts.insert_one(obj)
         print("Added Receipt")

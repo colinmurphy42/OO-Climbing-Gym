@@ -18,6 +18,11 @@ class OOGym:
         self.dbMem = self.db.getMember(phone)
         self.member = checkingIn.checkingIn(self.dbMem)
 
+    def openRec(self):
+        rec = {'date' : datetime.now()}
+        rec.update({'phone' : 'Opening' , 'desciption' : 'Opening Time' , 'total' : -1})
+        self.dailyCust.append(rec)
+
     def showReceipt(self):
         return self.gMember.getDescription()
 
@@ -38,8 +43,9 @@ class OOGym:
         self.gMember = None
         return (rec)
 
-    def closing():
+    def closing(self):
         data = {'date' : datetime.now() , 'dailyReceipts' : self.dailyCust}
+        self.db.addRec(data)
 
     def adduser(self, name, phone , M,C):
         exist = False
