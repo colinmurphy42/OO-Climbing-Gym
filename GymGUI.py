@@ -98,11 +98,11 @@ class EmployeePage(Frame):
         homeButt.pack(side=TOP, anchor=NW)
 
         openButt = ttk.Button(self, text="Open Gym", style='my.TButton',
-                               command=lambda: controller.showPage(self, MainPage))
+                               command=lambda: openStore(controller))
         openButt.pack(pady=(110,10), padx=10)
 
         closeButt = ttk.Button(self, text="Close Gym", style='my.TButton',
-                              command=lambda: controller.showPage(self, MainPage))
+                              command=lambda: closeQ())
         closeButt.pack(pady=10, padx=10)
 
         closeButt = ttk.Button(self, text="Set Next Climb Area", style='my.TButton',
@@ -112,7 +112,28 @@ class EmployeePage(Frame):
         def changeArea(current, controller):
             controller.showPage(current, RoutePage)
 
+        def closeQ():
+            popup = Tk()
+            popup.wm_title("Closing")
+            # Make it nice and center
+            popup.geometry("250x100+350+200")
+            # Tell them what to do
+            label = ttk.Label(popup, text="Close down gym now?", font=myFont)
+            label.pack(side="top", pady=10)
+            # Destroys pop-up when you hit ok, until next time..
+            B1 = ttk.Button(popup, text="No", command=popup.destroy)
+            B1.pack(pady=10, padx = 30, side = 'left')
+            B2 = ttk.Button(popup, text="Yes", command= lambda: closing(popup))
+            B2.pack(pady=10, padx = 30, side = 'right')
+            popup.mainloop()
 
+        def closing(popup):
+            gym.closing()
+            popup.destroy
+
+        def openStore(controller):
+            gym.openRec()
+            controller.showPage(self, MainPage)
 
 class CheckInPage(Frame):
     def __init__(self, parent, controller, gym):
@@ -288,7 +309,6 @@ class CheckOutPage(Frame):
         def checkOut(controller, current):
             gym.checkOut();
             print("Receipt added")
-            print(gym.dailyCust)
             controller.showPage(current, MainPage)
 
 
