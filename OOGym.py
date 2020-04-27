@@ -49,6 +49,9 @@ class OOGym:
         else:
             return ("Phone already exists")
 
+    def changeClimberType(self, phone, change):
+        self.db.chgType(phone, change)
+
     def establishRoutes(self):
         # Creating climbing areas and adding them to area list
         areaList = [ca.BoulderArea("Cave", 15), ca.BigWallArea("Yosemite", 16), ca.BoulderArea("Comp", 9),
@@ -59,6 +62,6 @@ class OOGym:
         #for i in range(9):
         #    ondra.setNextRoute()
         # Areas will be part of the setter class after they are initialized
-        for a in self.ondra.areaList:
-            print(a.name, a.routes)
+        #for a in self.ondra.areaList:
+            #print(a.name, a.routes)
         self.ondra.addNewArea(ca.BoulderArea("Slab", 16))
