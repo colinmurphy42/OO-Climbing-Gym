@@ -53,6 +53,6 @@ class OOGym:
         #for i in range(9):
         #    ondra.setNextRoute()
         # Areas will be part of the setter class after they are initialized
-        for a in self.ondra.areaList:
-            print(a.name, a.routes)
+        #for a in self.ondra.areaList:
+            #print(a.name, a.routes)
         self.ondra.addNewArea(ca.BoulderArea("Slab", 16))

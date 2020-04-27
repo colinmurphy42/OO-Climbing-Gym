@@ -257,8 +257,6 @@ class NewMemPage(Frame):
         contButt.grid(row=9, column=1)
 
         def getNewMemValues(controller, name, phone, memType, climbType, checkState):
-            # name = nameEntry.get()
-            print(len(memType), climbType)
             if checkState == 0:
                 popupWaiver()
             elif (len(name) or len(phone)) == 0 or (len(memType) or len(climbType)) == 0:
