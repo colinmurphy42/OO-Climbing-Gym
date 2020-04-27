@@ -6,6 +6,7 @@
 from tkinter import *
 from tkinter import ttk
 import OOGym
+import time
 
 myFont = ("Helvetica", 12)
 
@@ -178,14 +179,55 @@ class GearPage(Frame):
         rope = Checkbutton(self, text="Rope", variable=gR, state = gearOptions[2])
         rope.grid(row=5, column=2, sticky="W")
 
+        climbTypeLabel = Label(self, text = "Your climber type is:  " + gym.dbMem["climbType"])
+        climbTypeLabel.grid(row=9, column=1, pady=(10, 0))
+        changeButt = ttk.Button(self, text="Change Climber Type?", style='my.TButton', command=lambda: controller.showPage(self, ChangeGearPage))
+        changeButt.grid(row=10, column=1, pady=(10, 0))
+
         contButt = ttk.Button(self, text="Enter", style='my.TButton',
                               command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get(), self))
-        contButt.grid(row=9, column=1, pady=(40, 0))
+        contButt.grid(row=11, column=1, pady=(70, 0))
 
 
         def getGearValues(controller, shoeVal, harnVal, ropeVal, current):
             gym.pickgear(shoeVal, ropeVal, harnVal)
             controller.showPage(current, CheckOutPage)
+
+class ChangeGearPage(Frame):
+    def __init__(self, parent, controller, gym):
+        Frame.__init__(self, parent)
+        # Making a label object
+        tFrame = Frame(self)
+        label = Label(self, text="Pick your desired climber type", font=14)
+        label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(90, 0), pady=(100, 2))
+
+        # Radio button Group 1
+        cG = StringVar()
+        bType = Radiobutton(self, text="Boulder", value="Boulder", variable=cG)
+        bType.grid(padx = (50,0), row=5, column=0, sticky="E")
+        tType = Radiobutton(self, text="Top Rope", value="Top Rope", variable=cG)
+        tType.grid(row=5, column=1)
+        lType = Radiobutton(self, text="Lead", value="Lead", variable=cG)
+        lType.grid(row=5, column=2, sticky="W")
+
+        contButt = ttk.Button(self, text="Back to Gear Shop", style='my.TButton',
+                              command=lambda: backToGear(controller, self, cG.get()))
+        contButt.grid(row=6, column=1, pady = (50,0))
+
+        def backToGear(controller, current, climbChoice):
+            #Makes sure you picked something
+            if len(climbChoice) == 0:
+                popupFillValue()
+                controller.showPage(current, ChangeGearPage)
+            else:
+                # Calls function to update mongoDB
+                gym.changeClimberType(gym.dbMem["phone"], climbChoice)
+                # Pulls information from database
+                gym.checkIn(gym.dbMem["phone"])
+                #Goes back to gear page
+                controller.showPage(current, GearPage)
+
+
 
 
 class CheckOutPage(Frame):

@@ -43,6 +43,9 @@ class OOGym:
         else:
             return ("Phone already exists")
 
+    def changeClimberType(self, phone, change):
+        self.db.chgType(phone, change)
+
     def establishRoutes(self):
         # Creating climbing areas and adding them to area list
         areaList = [ca.BoulderArea("Cave", 15), ca.BigWallArea("Yosemite", 16), ca.BoulderArea("Comp", 9),
