@@ -265,6 +265,7 @@ class NewMemPage(Frame):
                 popupFillValue()
             else:
                 gym.adduser(name, phone, memType, climbType)
+                gym.checkIn(phone)
                 controller.showPage(self, GearPage)
 
 
