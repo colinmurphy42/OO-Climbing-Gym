@@ -38,6 +38,7 @@ class DB:
         self._collection.insert_one(data)
         print("added")
 
+    # return the whole collection of clients
     def coll(self):
         return self._collection.find({})
 

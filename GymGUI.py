@@ -39,13 +39,6 @@ class gymGUI(Tk):
         # This dict will hold all our window pages
         self.pages = {}
 
-        # ******Must add new page here for it to be connected to others*********
-        # for P in (MainPage, CheckInPage,RoutePage, NewMemPage, GearPage, CheckOutPage):
-        #     page = P(mainContain, self , gym)
-        #     self.pages[P] = page
-        #     # The page will "stick" to entire size of the container
-        #     page.grid(row=0, column=0, sticky="nsew")
-
         self.showPage(None, MainPage)
 
     def showPage(self, current ,controller):
@@ -92,6 +85,7 @@ class MainPage(Frame):
                                command=lambda: controller.showPage(self,EmployeePage))
         employeeButt.pack(pady=(80,0), padx=10, side = "right")
 
+# Page for the Employees
 class EmployeePage(Frame):
     def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
@@ -113,6 +107,7 @@ class EmployeePage(Frame):
                                command=lambda: changeArea(self, controller))
         closeButt.pack(pady=10, padx=10)
 
+        # Changes the climb areas
         def changeArea(current, controller):
             popup = Tk()
             popup.wm_title("Setting Route")
@@ -139,6 +134,7 @@ class EmployeePage(Frame):
             B1.pack(pady=10)
             popup.mainloop()
 
+        # pop up to make sure they want to close the store
         def closeQ():
             popup = Tk()
             popup.wm_title("Closing")
@@ -154,14 +150,17 @@ class EmployeePage(Frame):
             B2.pack(pady=10, padx = 30, side = 'right')
             popup.mainloop()
 
+        # cals closing function
         def closing(popup):
             gym.closing()
             popup.destroy
 
+        # adds opening reciept to daily customer
         def openStore(controller):
             gym.openRec()
             controller.showPage(self, MainPage)
 
+# page where they type phone number to get info from db
 class CheckInPage(Frame):
     def __init__(self, parent, controller, gym,tickP):
         Frame.__init__(self, parent)
@@ -188,6 +187,7 @@ class CheckInPage(Frame):
                                 command=lambda: controller.showPage(self,NewMemPage))
         signUpButt.grid(row=4, column=1, pady=10)
 
+        # checks the value isn't empty
         def checkInValues(controller, phoneLogin, current):
             if len(phoneLogin) == 0:
                 popupFillValue()
@@ -200,7 +200,7 @@ class CheckInPage(Frame):
                     gym.checkIn(phoneLogin)
                     controller.showPage(current ,GearPage)
 
-
+# The page to check out where the routes are
 class RoutePage(Frame):
     def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
@@ -228,7 +228,7 @@ class RoutePage(Frame):
             # areaInfo.append((a.name, a.routes))
         # print("Son",str(areaInfo))
 
-
+# Chekcing what gear they want page
 class GearPage(Frame):
     def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
@@ -276,6 +276,7 @@ class GearPage(Frame):
             gym.pickgear(shoeVal, ropeVal, harnVal)
             controller.showPage(current, CheckOutPage)
 
+# page for them to change the climber type
 class ChangeGearPage(Frame):
     def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
@@ -310,9 +311,7 @@ class ChangeGearPage(Frame):
                 #Goes back to gear page
                 controller.showPage(current, GearPage)
 
-
-
-
+# the checking out page
 class CheckOutPage(Frame):
     def __init__(self, parent, controller, gym,tickP):
         Frame.__init__(self, parent)
@@ -343,7 +342,7 @@ class CheckOutPage(Frame):
             print("Receipt added")
             controller.showPage(current, MainPage)
 
-
+# the new membership page
 class NewMemPage(Frame):
     def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)

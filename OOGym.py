@@ -9,23 +9,27 @@ class OOGym:
     def __init__(self):
         self.db = DB.DB()
         self.dailyCust = []
-        self.dbMem = {'name' : ''}
+        self.dbMem = None
         self.member = None
         self.gMember = None
         self.ondra = None
 
-    def checkIn(self, phone): # Might add all checking in processes here to connect UI
+    # makes instance of checkingIn class and saves the customer object
+    def checkIn(self, phone):
         self.dbMem = self.db.getMember(phone)
         self.member = checkingIn.checkingIn(self.dbMem)
 
+    # the reciept that is added to know when the store opens
     def openRec(self):
         rec = {'date' : datetime.now()}
         rec.update({'phone' : 'Opening' , 'desciption' : 'Opening Time' , 'total' : -1})
         self.dailyCust.append(rec)
 
+    # returns the customer reciept
     def showReceipt(self):
         return self.gMember.getDescription()
 
+    # uses decorator to add gear
     def pickgear(self, shoes, rope , harness):
         self.gMember = self.member
         if (shoes == True):
@@ -35,22 +39,26 @@ class OOGym:
         if (harness == True):
             self.gMember = checkingIn.Harness(self.gMember, self.member.member)
 
+    # adds the datetime to reciept and adds it to daily customers list and set all save member info to None
     def checkOut(self):
         rec = {'date' : datetime.now()}
         rec.update(self.gMember.checkout())
         self.dailyCust.append(rec)
+        self.dbMem = None
         self.member = None
         self.gMember = None
         return (rec)
 
+    # adds the closing date and list of daily customer to DB
     def closing(self):
         data = {'date' : datetime.now() , 'dailyReceipts' : self.dailyCust}
         self.db.addRec(data)
 
+    # adds new user to database
     def adduser(self, name, phone , M,C):
         exist = False
         cursor = self.db.coll()
-        for i in cursor:
+        for i in cursor:   # makes sure user doesn't already exist
             if i['phone'] == phone:
                 exist = True
         if exist == False:
@@ -59,6 +67,7 @@ class OOGym:
         else:
             return ("Phone already exists")
 
+    # changes the climber type
     def changeClimberType(self, phone, change):
         self.db.chgType(phone, change)
 
