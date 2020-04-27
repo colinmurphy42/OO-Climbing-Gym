@@ -84,6 +84,36 @@ class MainPage(Frame):
                                command=lambda: controller.showPage(self,RoutePage))
         routeButt.pack(pady=10, padx=10)
 
+        employeeButt = Button(self, text="Employees Only", font = ("Helvetica", 8),
+                               command=lambda: controller.showPage(self,EmployeePage))
+        employeeButt.pack(pady=(80,0), padx=10, side = "right")
+
+class EmployeePage(Frame):
+    def __init__(self, parent, controller, gym):
+        Frame.__init__(self, parent)
+        # Home button
+        homeButt = ttk.Button(self, text="Home", style='my.TButton',
+                              command=lambda: controller.showPage(self, MainPage))
+
+        homeButt.pack(side=TOP, anchor=NW)
+
+        openButt = ttk.Button(self, text="Open Gym", style='my.TButton',
+                               command=lambda: controller.showPage(self, MainPage))
+        openButt.pack(pady=(110,10), padx=10)
+
+        closeButt = ttk.Button(self, text="Close Gym", style='my.TButton',
+                              command=lambda: controller.showPage(self, MainPage))
+        closeButt.pack(pady=10, padx=10)
+
+        closeButt = ttk.Button(self, text="Set Next Climb Area", style='my.TButton',
+                               command=lambda: changeArea(self, controller))
+        closeButt.pack(pady=10, padx=10)
+
+        def changeArea(current, controller):
+            controller.showPage(current, RoutePage)
+
+
+
 class CheckInPage(Frame):
     def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
