@@ -8,8 +8,7 @@ from tkinter import ttk
 import OOGym
 
 myFont = ("Helvetica", 12)
-gym = OOGym.OOGym()
-gym.establishRoutes()
+
 
 
 class gymGUI(Tk):
@@ -22,31 +21,36 @@ class gymGUI(Tk):
         self.resizable(False, False)
 
         # Contains everything in GUI
-        mainContain = Frame(self)
+        self.mainContain = Frame(self)
         # Container is all encompassing
-        mainContain.pack(side="top", fill="both", expand="True")
+        self.mainContain.pack(side="top", fill="both", expand="True")
 
+        self.__gym = OOGym.OOGym()
+        self.__gym.establishRoutes()
         # Configure with min size and priority
-        mainContain.grid_rowconfigure(0, weight=1)
-        mainContain.grid_columnconfigure(0, weight=1)
+        self.mainContain.grid_rowconfigure(0, weight=1)
+        self.mainContain.grid_columnconfigure(0, weight=1)
 
         # This dict will hold all our window pages
         self.pages = {}
 
         # ******Must add new page here for it to be connected to others*********
-        for P in (MainPage, CheckInPage, RoutePage, NewMemPage, GearPage, CheckOutPage):
-            page = P(mainContain, self)
-            self.pages[P] = page
-            # The page will "stick" to entire size of the container
-            page.grid(row=0, column=0, sticky="nsew")
+        # for P in (MainPage, CheckInPage,RoutePage, NewMemPage, GearPage, CheckOutPage):
+        #     page = P(mainContain, self , gym)
+        #     self.pages[P] = page
+        #     # The page will "stick" to entire size of the container
+        #     page.grid(row=0, column=0, sticky="nsew")
 
-        self.showPage(MainPage)
+        self.showPage(None, MainPage)
 
-    def showPage(self, controller):
+    def showPage(self, current ,controller):
         # Find the page we want in the pages dictionary
-        page = self.pages[controller]
+        page = controller(self.mainContain , self, self.__gym )
+        #self.pages[controller]
+        page.grid(row=0, column=0, sticky="nsew")
         # Raise that page to the front
         page.tkraise()
+        del current
 
 
 def fc(say="Basic boy"):
@@ -54,7 +58,7 @@ def fc(say="Basic boy"):
 
 
 class MainPage(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, gym):
         # Pass in parent class and init frame
         Frame.__init__(self, parent)
         otherFont = ("Helvetica", 15)
@@ -68,27 +72,26 @@ class MainPage(Frame):
 
         # Lambda helps us get around parameter problems in
         checkInButt = ttk.Button(self, text="Check-In", style='my.TButton',
-                                 command=lambda: controller.showPage(CheckInPage))
+                                 command=lambda: controller.showPage(self,CheckInPage))
         checkInButt.pack(pady=(30, 10), padx=10)
 
         newMemButt = ttk.Button(self, text="New Member?", style='my.TButton',
-                                command=lambda: controller.showPage(NewMemPage))
+                                command=lambda: controller.showPage(self,NewMemPage))
         newMemButt.pack(pady=10, padx=10)
 
         routeButt = ttk.Button(self, text="Check Out Our Routes!", style='my.TButton',
-                               command=lambda: controller.showPage(RoutePage))
+                               command=lambda: controller.showPage(self,RoutePage))
         routeButt.pack(pady=10, padx=10)
 
-
 class CheckInPage(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
         # Making a label object
-        label = Label(self, text="Enter Your Information", font=14)
+        label = Label(self, text="Enter Your Information ", font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="W", padx=(0, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
-        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self,MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         # This is for the entry boxes
@@ -99,30 +102,30 @@ class CheckInPage(Frame):
         loginEntry.grid(row=2, column=1, sticky="W", pady=(40, 5))
 
         enterButt = ttk.Button(self, text="Enter", style='my.TButton',
-                               command=lambda: checkInValues(controller, loginEntry.get()))
+                               command=lambda: checkInValues(controller, loginEntry.get(), self))
         enterButt.grid(row=3, column=1, pady=(40, 10))
 
         signUpButt = ttk.Button(self, text="New? Sign Up Here", style='my.TButton',
-                                command=lambda: controller.showPage(NewMemPage))
+                                command=lambda: controller.showPage(self,NewMemPage))
         signUpButt.grid(row=4, column=1, pady=10)
 
-        def checkInValues(controller, phoneLogin):
+        def checkInValues(controller, phoneLogin, current):
             if len(phoneLogin) == 0:
                 popupFillValue()
             else:
                 gym.checkIn(phoneLogin)
-                controller.showPage(GearPage)
+                controller.showPage(current ,GearPage)
 
 
 class RoutePage(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
         tFrame = Frame(self)
         label = Label(self, text="Here's our current routes", font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
-        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(None, MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         areaInfo = []
@@ -143,11 +146,11 @@ class RoutePage(Frame):
 
 
 class GearPage(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
 
         # Home button
-        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self,lMainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         label = Label(self, text="Gear Shop", font=14)
@@ -167,38 +170,38 @@ class GearPage(Frame):
         rope.grid(row=5, column=2, sticky="W")
 
         contButt = ttk.Button(self, text="Enter", style='my.TButton',
-                              command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get()))
+                              command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get(), self))
         contButt.grid(row=9, column=1, pady=(40, 0))
 
-        def getGearValues(controller, shoeVal, harnVal, ropeVal):
+        def getGearValues(controller, shoeVal, harnVal, ropeVal, current):
             gym.pickgear(shoeVal, ropeVal, harnVal)
-            controller.showPage(CheckOutPage)
+            controller.showPage(current, CheckOutPage)
 
 
 class CheckOutPage(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
         # Making a label object
-        label = Label(self, text="Checking out" + gym.dbMem['name'], font=14)
+        label = Label(self, text="Checking out for: " + gym.dbMem['name'], font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="W", padx=(0, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
-        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self ,MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         contButt = ttk.Button(self, text="Check Out", style='my.TButton',
-                              command=lambda: checkOut(controller))
+                              command=lambda: checkOut(controller , self))
         contButt.grid(row=9, column=1, pady=(40, 0))
 
-        def checkOut(controller):
+        def checkOut(controller, current):
             gym.checkOut();
             print("Receipt added")
             print(gym.dailyCust)
-            controller.showPage(MainPage)
+            controller.showPage(current, MainPage)
 
 
 class NewMemPage(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, gym):
         Frame.__init__(self, parent)
         # Making a label object
         tFrame = Frame(self)
@@ -206,7 +209,7 @@ class NewMemPage(Frame):
         label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(55, 0), pady=(50, 2))
 
         # Lambda helps us get around parameter problems in
-        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(MainPage))
+        homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self, MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
 
         # This is for the entry boxes
@@ -262,7 +265,7 @@ class NewMemPage(Frame):
                 popupFillValue()
             else:
                 gym.adduser(name, phone, memType, climbType)
-                controller.showPage(GearPage)
+                controller.showPage(self, GearPage)
 
 
 # This pop-up will display if you have not filled out the waiver

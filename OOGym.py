@@ -5,7 +5,7 @@ class OOGym:
     def __init__(self):
         self.db = DB.DB()
         self.dailyCust = []
-        self.dbMem = {'name' : ''}
+        self.dbMem = {'name' : 'WORKS'}
         self.member = None
         self.ondra = None
 
