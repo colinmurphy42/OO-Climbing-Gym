@@ -2,6 +2,6 @@
 Oscar Delgado and Colin Murphy
 Object Oriented Analysis and Design Final Project
 
-installed:
-pip3 install pymongo
-pip3 install --user --upgrade pymongo pymongo[srv] dnspython
+install to run
+1. pip3 install pymongo
+2. pip3 install --user --upgrade pymongo pymongo[srv] dnspython
