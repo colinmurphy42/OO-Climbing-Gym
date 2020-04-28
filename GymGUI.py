@@ -7,6 +7,7 @@ from tkinter import *
 from tkinter import ttk
 import OOGym
 import time
+import sys
 
 myFont = ("Helvetica", 12)
 
@@ -17,7 +18,7 @@ class gymGUI(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         # Some window details
-        self.title("OO CLimbing Gym")
+        self.title("OO Climbing Gym")
         self.geometry("400x450+300+50")
         self.resizable(False, False)
 
@@ -141,19 +142,21 @@ class EmployeePage(Frame):
             # Make it nice and center
             popup.geometry("250x100+350+200")
             # Tell them what to do
-            label = ttk.Label(popup, text="Close down gym now?", font=myFont)
+            label = ttk.Label(popup, text="Close Gym?", font=myFont)
             label.pack(side="top", pady=10)
             # Destroys pop-up when you hit ok, until next time..
             B1 = ttk.Button(popup, text="No", command=popup.destroy)
-            B1.pack(pady=10, padx = 30, side = 'left')
+            B1.pack(pady=10, padx = 30, side = 'right')
             B2 = ttk.Button(popup, text="Yes", command= lambda: closing(popup))
-            B2.pack(pady=10, padx = 30, side = 'right')
+            B2.pack(pady=10, padx = 30, side = 'left')
             popup.mainloop()
+
 
         # cals closing function
         def closing(popup):
             gym.closing()
-            popup.destroy
+            popup.destroy()
+            sys.exit()
 
         # adds opening reciept to daily customer
         def openStore(controller):
@@ -445,7 +448,7 @@ def popupFillValue():
     B1.pack(pady=10)
     popup.mainloop()
 
-# This pop-up will display if you have not filled out all the values asked
+# This pop-up will display if gym is full.
 def popupGymFull(newMemBool):
     popup = Tk()
     popup.wm_title("We're Sorry")
