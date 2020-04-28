@@ -12,7 +12,6 @@ import sys
 myFont = ("Helvetica", 12)
 
 
-
 class gymGUI(Tk):
 
     def __init__(self, *args, **kwargs):
@@ -30,30 +29,24 @@ class gymGUI(Tk):
         # Initializing gym, routes, and ticket pool
         self.__gym = OOGym.OOGym()
         self.__gym.establishRoutes()
-        self._ticketPool = OOGym.ticketPool(2)
+        self.gymCapacity = 3
+        self._ticketPool = OOGym.ticketPool(self.gymCapacity)
 
 
         # Configure with min size and priority
         self.mainContain.grid_rowconfigure(0, weight=1)
         self.mainContain.grid_columnconfigure(0, weight=1)
 
-        # This dict will hold all our window pages
-        self.pages = {}
 
         self.showPage(None, MainPage)
 
+    #This function re-initializes pages of the GUI to switch over too, and deletes the former page
     def showPage(self, current ,controller):
-        # Find the page we want in the pages dictionary
         page = controller(self.mainContain , self, self.__gym, self._ticketPool)
-        #self.pages[controller]
         page.grid(row=0, column=0, sticky="nsew")
         # Raise that page to the front
         page.tkraise()
         del current
-
-
-def fc(say="Basic boy"):
-    print(say)
 
 
 class MainPage(Frame):
@@ -61,7 +54,7 @@ class MainPage(Frame):
         # Pass in parent class and init frame
         Frame.__init__(self, parent)
         otherFont = ("Helvetica", 15)
-        # font = myFont
+
         # Making a label object
         label = Label(self, text="Welcome to the OO Climbing Gym!", font=otherFont)
         label.pack(pady=40, padx=10)
@@ -69,7 +62,7 @@ class MainPage(Frame):
         s = ttk.Style()
         s.configure('my.TButton', font=('Helvetica', 12))
 
-        # Lambda helps us get around parameter problems in
+        # Lambda helps us get around function parameter problems
         checkInButt = ttk.Button(self, text="Check-In", style='my.TButton',
                                  command=lambda: controller.showPage(self,CheckInPage))
         checkInButt.pack(pady=(30, 10), padx=10)
@@ -96,6 +89,7 @@ class EmployeePage(Frame):
 
         homeButt.pack(side=TOP, anchor=NW)
 
+        # Open and close gym buttons
         openButt = ttk.Button(self, text="Open Gym", style='my.TButton',
                                command=lambda: openStore(controller))
         openButt.pack(pady=(110,10), padx=10)
@@ -115,6 +109,7 @@ class EmployeePage(Frame):
             # Make it nice and center
             popup.geometry("525x175+250+200")
 
+            #See what climbing area is next up for change
             nextArea = gym.ondra.getNextSet()
             oldRoutes = str(nextArea.getRoutes())
 
@@ -152,7 +147,7 @@ class EmployeePage(Frame):
             popup.mainloop()
 
 
-        # cals closing function
+        # calls closing function
         def closing(popup):
             gym.closing()
             popup.destroy()
@@ -195,11 +190,14 @@ class CheckInPage(Frame):
             if len(phoneLogin) == 0:
                 popupFillValue()
             else:
+                #Using object pool to keep track of capacity
                 tick = tickP.getTicket()
                 if tick == None:
+                    #If gym is full let them know
                     popupGymFull(False)
                     controller.showPage(current, MainPage)
                 else:
+                    #If gym is not full they can continue
                     gym.checkIn(phoneLogin)
                     controller.showPage(current ,GearPage)
 
@@ -216,7 +214,10 @@ class RoutePage(Frame):
         homeButt.grid(row=0, column=0, sticky="nw")
 
         areaInfo = []
+        #This is just to make sure theyre not in the same row
         areaCounter = 3
+
+        #For every climbing area we grab its name and routes and make a new text box for each to display them
         for a in gym.ondra.areaList:
             txtN = Text(self, height=1, width=10, font=("Helvetica", 8))
             txtN.grid(row=areaCounter, column=0, padx=(10, 0), pady=(10, 0))
@@ -228,8 +229,6 @@ class RoutePage(Frame):
             txtR.insert(END, a.routes)
             txtR.config(state=DISABLED)
             areaCounter += 1
-            # areaInfo.append((a.name, a.routes))
-        # print("Son",str(areaInfo))
 
 # Chekcing what gear they want page
 class GearPage(Frame):
@@ -246,13 +245,14 @@ class GearPage(Frame):
         #This is for presenting the right gear based on your climber type
         gearOptions = [ACTIVE, DISABLED, DISABLED]
 
+        #Gear options change based on climber
         if gym.dbMem['climbType'] == 'Top Rope':
             gearOptions[1] = ACTIVE
         elif gym.dbMem['climbType'] == 'Lead':
             gearOptions[1] = ACTIVE
             gearOptions[2] = ACTIVE
 
-        # Checkbox Group 1
+        # Gear radio buttons
         gS = IntVar()
         shoes = Checkbutton(self, text="Shoes", variable=gS, state = gearOptions[0])
         shoes.grid(row=5, column=0, sticky="E")
@@ -265,6 +265,7 @@ class GearPage(Frame):
         rope = Checkbutton(self, text="Rope", variable=gR, state = gearOptions[2])
         rope.grid(row=5, column=2, sticky="W")
 
+        #Displays their climber type from database
         climbTypeLabel = Label(self, text = "Your climber type is:  " + gym.dbMem["climbType"])
         climbTypeLabel.grid(row=9, column=1, pady=(10, 0))
         changeButt = ttk.Button(self, text="Change Climber Type?", style='my.TButton', command=lambda: controller.showPage(self, ChangeGearPage))
@@ -274,12 +275,12 @@ class GearPage(Frame):
                               command=lambda: getGearValues(controller, gS.get(), gH.get(), gR.get(), self))
         contButt.grid(row=11, column=1, pady=(70, 0))
 
-
+        #Sends off what gear they chose
         def getGearValues(controller, shoeVal, harnVal, ropeVal, current):
             gym.pickgear(shoeVal, ropeVal, harnVal)
             controller.showPage(current, CheckOutPage)
 
-# page for them to change the climber type
+#Page for them to change the climber type
 class ChangeGearPage(Frame):
     def __init__(self, parent, controller, gym, tickP):
         Frame.__init__(self, parent)
@@ -288,7 +289,7 @@ class ChangeGearPage(Frame):
         label = Label(self, text="Pick your desired climber type", font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="N", padx=(90, 0), pady=(100, 2))
 
-        # Radio button Group 1
+        # Radio buttons for changing climber type
         cG = StringVar()
         bType = Radiobutton(self, text="Boulder", value="Boulder", variable=cG)
         bType.grid(padx = (50,0), row=5, column=0, sticky="E")
@@ -322,11 +323,12 @@ class CheckOutPage(Frame):
         label = Label(self, text="Checking out for: " + gym.dbMem['name'], font=14)
         label.grid(row=0, column=0, columnspan=3, sticky="W", padx=(0, 0), pady=(50, 2))
 
-        # Lambda helps us get around parameter problems in
+        # Home button
         homeButt = ttk.Button(self, text="Home", style='my.TButton', command=lambda: controller.showPage(self ,MainPage))
         homeButt.grid(row=0, column=0, sticky="nw")
         txtN = Text(self, height=7, width=30, font=("Helvetica", 12))
         txtN.grid(row=1, column=0, padx=(10, 0), pady=(10, 0))
+        #Get receipt
         txtN.insert(END, gym.showReceipt())
         txtN.config(state=DISABLED)
 
@@ -370,7 +372,7 @@ class NewMemPage(Frame):
         phoneLabel.grid(row=3, column=0, sticky="E", pady=10)
         phoneEntry.grid(row=3, column=1, sticky="W", pady=10)
 
-        # Radio button Group 1
+        # Radio buttons membership type
         vM = StringVar()
         memLabel = Label(self, text="Choose membership:", font=myFont)
         memLabel.grid(row=4, column=1, columnspan=2, sticky='W', pady=(15, 10))
@@ -381,7 +383,7 @@ class NewMemPage(Frame):
         preMem = Radiobutton(self, text="Premium", value="Premium", variable=vM)
         preMem.grid(row=5, column=2, sticky="W")
 
-        # Radio button Group 2
+        # Radio buttons climber type
         vC = StringVar()
         memLabel = Label(self, text="Choose climber type:", font=myFont)
         memLabel.grid(row=6, column=1, columnspan=2, sticky='W', pady=(15, 10))
@@ -402,14 +404,16 @@ class NewMemPage(Frame):
                                                               vC.get(), cW.get()))
         contButt.grid(row=9, column=1)
 
+        #This function is to make sure everything we needed was inputted
         def getNewMemValues(controller, name, phone, memType, climbType, checkState):
             if checkState == 0:
                 popupWaiver()
             elif (len(name) or len(phone)) == 0 or (len(memType) or len(climbType)) == 0:
                 popupFillValue()
             else:
+                #Makes membership for new user
                 gym.adduser(name, phone, memType, climbType)
-
+                # Using object pool to keep track of capacity
                 tick = tickP.getTicket()
                 if tick == None:
                     popupGymFull(True)

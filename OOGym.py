@@ -2,7 +2,7 @@
 # https://sourcemaking.com/design_patterns/object_pool/python/1
 
 import DB, checkingIn, ClimbArea as ca
-from datetime import tzinfo, timedelta, datetime
+from datetime import datetime
 
 
 class OOGym:
@@ -19,13 +19,13 @@ class OOGym:
         self.dbMem = self.db.getMember(phone)
         self.member = checkingIn.checkingIn(self.dbMem)
 
-    # the reciept that is added to know when the store opens
+    # the receipt that is added to know when the store opens
     def openRec(self):
         rec = {'date' : datetime.now()}
-        rec.update({'phone' : 'Opening' , 'desciption' : 'Opening Time' , 'total' : -1})
+        rec.update({'phone' : 'Opening' , 'description' : 'Opening Time' , 'total' : -1})
         self.dailyCust.append(rec)
 
-    # returns the customer reciept
+    # returns the customer receipt
     def showReceipt(self):
         return self.gMember.getDescription()
 
@@ -89,7 +89,6 @@ class ticketPool:
         # Make an array of ticket objects as large as the pool size
         for i in range(poolSize):
             self.tickets.append(Ticket(i))
-        #self._tickets = [Ticket() for _ in range(poolSize)]
 
     # Retrieving a ticket
     def getTicket(self):

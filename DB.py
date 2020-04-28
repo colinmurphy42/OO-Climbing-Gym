@@ -2,6 +2,7 @@ import pymongo
 from pymongo import MongoClient
 from datetime import tzinfo, timedelta, datetime
 
+
 class DB:
     def __init__(self):
         self.__CONNECTION_STRING = "mongodb+srv://oscardel13:ahOv9313@ooclimbinggym-pdhjh.mongodb.net/test?retryWrites=true&w=majority"

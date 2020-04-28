@@ -1,4 +1,6 @@
+# Created by Colin Murphy and Oscar Delgado
 import GymGUI
+
 
 def main():
     app = GymGUI.gymGUI()
