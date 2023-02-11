@@ -5,7 +5,7 @@ from datetime import tzinfo, timedelta, datetime
 
 class DB:
     def __init__(self):
-        self.__CONNECTION_STRING = "mongodb+srv://oscardel13:ahOv9313@ooclimbinggym-pdhjh.mongodb.net/test?retryWrites=true&w=majority"
+        self.__CONNECTION_STRING = 
         client = pymongo.MongoClient(self.__CONNECTION_STRING)
         db = client.get_database('OOClimbingGym')
         self._collection = db['Gym1']
